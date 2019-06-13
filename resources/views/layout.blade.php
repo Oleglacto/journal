@@ -17,7 +17,7 @@
                     <ul class="menu-list">
                         <li><router-link to="/lessons">Дисцплины</router-link></li>
                         <li><router-link to="/schedule">Расписание</router-link></li>
-                        <li><router-link to="/students">Студенты</router-link></li>
+                        <li><router-link to="/users">Пользователи</router-link></li>
                     </ul>
                 </aside>
 

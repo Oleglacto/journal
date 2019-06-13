@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Модель ролей
+ *
+ * @property string     $role
  */
 class Role extends Model
 {
@@ -24,6 +26,14 @@ class Role extends Model
      */
     protected $fillable = [
         'role',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $visible = [
+        'role_id',
+        'role'
     ];
 
     /**

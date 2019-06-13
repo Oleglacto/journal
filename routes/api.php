@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +24,11 @@ Route::get('/schedule', 'ScheduleController@index')->name('schedule.index');
 Route::get('/schedule/by/{user}', 'ScheduleController@getSchedule')->name('schedule.user.schedule');
 Route::post('/schedule', 'ScheduleController@store')->name('schedule.store');
 
-Route::get('/students', 'StudentsController@index')->name('students.index');
+Route::get('/users', 'UsersController@index')->name('users.index');
+Route::post('/user', 'UsersController@store')->name('users.store');
 
-Route::get('/students/{user}', 'StudentsController@show')->name('students.show');
+Route::get('/users/{user}', 'StudentsController@show')->name('users.show');
+Route::get('/service-info', 'IndexController@getServiceInformation');
 
 Route::get('/teachers', 'UsersController@getTeachers')->name('teachers.get');
-Route::get('/schedule-by-day', 'ScheduleController@getScheduleByUserAndDayOfTheWeek')->name('getSchedule.byDay');
+Route::get('/schedule-by-day', 'ScheduleController@getLessonByTeacherAndDay')->name('getSchedule.byDay');

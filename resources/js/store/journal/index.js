@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
 export default {
     state: {
         teachers: {},
@@ -50,7 +48,6 @@ export default {
         },
 
         getScheduleForTeacher(context, data) {
-            console.log(data);
             axios.get(context.state.pref + context.state.GET.schedule, {'params' : data})
                 .then(response => {
                     context.commit('addSchedule', response.data.data);

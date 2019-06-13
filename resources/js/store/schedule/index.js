@@ -1,11 +1,11 @@
 import axios from 'axios';
-
-axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+import {merge} from "lodash";
+import get from "lodash/get";
 
 export default {
     state: {
-        schedule: [],
-        scheduleByUser: [],
+        schedule: null,
+        scheduleByUser: {},
         pref: '/api',
         GET: {
             schedule: '/schedule',
@@ -26,12 +26,20 @@ export default {
     },
     getters: {
         scheduleInformation(state) {
-            return state.schedule;
+            return state.schedule
         },
 
         scheduleByUser(state) {
             return state.scheduleByUser;
-        }
+        },
+
+        teachers(state) {
+            return get(state, 'schedule.teachers', []);
+        },
+        lessons(state) {
+            return get(state, 'schedule.lessons', []);
+        },
+
     },
     mutations: {
         addScheduleInformation(store, schedule) {

@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 /**
  * Модель группы студентов
+ *
+ * @property string                 $name
+ * @property Collection|User[]      $users
  */
 class Group extends Model
 {
@@ -24,6 +28,14 @@ class Group extends Model
      */
     protected $fillable = [
         'name',
+    ];
+
+    /**
+     * {@inheritdoc}
+     */
+    protected $visible = [
+        'name',
+        'group_id'
     ];
 
     /**

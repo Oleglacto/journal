@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Filters\UsersFilters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -13,6 +14,7 @@ use Illuminate\Support\Collection;
  * @property string                     $last_name          Фамилия
  * @property string                     $middle_name        Отчество
  * @property Role                       $role               роль (студент, преподаватель...)
+ * @property Group                      $group              группа
  * @property string                     $science_degree     научная степень
  * @property Collection|Schedule[]      $schedule           расписание
  */
@@ -40,7 +42,7 @@ class User extends Model
         'first_name',
         'last_name',
         'middle_name',
-        'role',
+        'role_idз',
         'science_degree',
         'group_id'
     ];
@@ -123,5 +125,17 @@ class User extends Model
     public function scopeStudents(Builder $query)
     {
         return $query->where('role_id', 2);
+    }
+
+    /**
+     * Apply all relevant thread filters.
+     *
+     * @param  Builder $query
+     * @param UsersFilters $filters
+     * @return Builder
+     */
+    public function scopeFilter($query, UsersFilters $filters)
+    {
+        return $filters->apply($query);
     }
 }

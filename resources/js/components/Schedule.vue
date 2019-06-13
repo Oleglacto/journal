@@ -151,7 +151,7 @@
                     <div class="header">Добавить расписание</div>
                     <el-form class="form" ref="form" :model="form" @submit.native.prevent="" label-width="120px" style="width: 100%" border>
                         <el-form-item label="День недели" :error="errors.day">
-                            <el-select v-model="form.day" @change="clearInput" placeholder="День недели" id="day">
+                            <el-select v-model="form.day" @focus="clearInput" placeholder="День недели" id="day">
                                 <el-option
                                         v-for="item in daysOfTheWeek"
                                         :key="item.en"
@@ -162,7 +162,7 @@
                         </el-form-item>
                         <el-form-item id="time" label="Время" :error="errors.time">
                             <el-time-select
-                                    @change="clearInput"
+                                    @focus="clearInput"
                                     class="timePicker"
                                     placeholder="Начало"
                                     v-model="form.dateFrom"
@@ -173,7 +173,7 @@
                                     }">
                             </el-time-select>
                             <el-time-select
-                                    @change="clearInput"
+                                    @focus="clearInput"
                                     class="timePicker"
                                     placeholder="Конец"
                                     v-model="form.dateTo"
@@ -186,7 +186,7 @@
                             </el-time-select>
                         </el-form-item>
                         <el-form-item label="Дисциплина" :error="errors.lesson_id">
-                            <el-select v-model="form.lesson_id" placeholder="Дисциплина" @change="clearInput" id="lesson_id">
+                            <el-select v-model="form.lesson_id" placeholder="Дисциплина" @focus="clearInput" id="lesson_id">
                                 <el-option
                                         v-for="lesson in lessons"
                                         :key="lesson.lesson_id"
@@ -206,9 +206,9 @@
                             </el-select>
                         </el-form-item>
                         <el-form-item label="Группа" :error="errors.group_id">
-                            <el-select id="group_id" v-model="form.group_id" placeholder="Группа" @change="clearInput">
+                            <el-select id="group_id" v-model="form.group_id" placeholder="Группа" @focus="clearInput">
                                 <el-option
-                                        v-for="group in groups"
+                                        v-for="group in groupList"
                                         :key="group.group_id"
                                         :label="group.name"
                                         :value="group.group_id">
@@ -227,6 +227,8 @@
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
+
     export default {
         data() {
             return {
@@ -280,18 +282,15 @@
 
         mounted() {
             this.$store.dispatch('getScheduleIndex');
+            this.$store.dispatch('getServiceInfo');
         },
 
         computed: {
-            lessons() {
-                return this.$store.getters.scheduleInformation.lessons
-            },
-            teachers() {
-                return this.$store.getters.scheduleInformation.teachers
-            },
-            groups() {
-                return this.$store.getters.scheduleInformation.groups
-            },
+            ...mapGetters([
+                'teachers',
+                'lessons',
+                'groupList'
+            ]),
             monday() {
                 return this.$store.getters.scheduleByUser.monday
             },
@@ -319,7 +318,6 @@
             selectTeacher(item) {
                 this.chosenTeacher = item;
                 this.getScheduleByUser();
-                this.clearInput(item)
             },
 
             getDate() {

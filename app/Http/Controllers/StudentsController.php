@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Transformers\StudentInformationTransformer;
-use App\Transformers\StudentsTransformer;
 use League\Fractal\Manager;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
-use League\Fractal\Resource\Collection;
+
 
 /**
  * Контроллер страницы списка студентов
@@ -24,20 +22,7 @@ class StudentsController extends \Illuminate\Routing\Controller
         $this->fractal = $fractal;
     }
 
-    /**
-     * Главная страница со студентами
-     * @param StudentsTransformer $studentsTransformer
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function index(StudentsTransformer $studentsTransformer)
-    {
-        $students = User::students()->with('group')->paginate(10);
 
-        $collection = new Collection($students, $studentsTransformer);
-        $collection->setPaginator(new IlluminatePaginatorAdapter($students));
-
-        return response()->json($this->fractal->createData($collection)->toArray());
-    }
 
     /**
      * Информация по одному студенту
