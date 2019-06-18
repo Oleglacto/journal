@@ -3505,6 +3505,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -3558,6 +3563,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -3566,27 +3583,50 @@ __webpack_require__.r(__webpack_exports__);
       },
       lessonId: '',
       create: true,
-      emptyData: ''
+      emptyData: '',
+      searchFormVisible: false,
+      search: '',
+      openedHeaderCell: {}
     };
   },
   mounted: function mounted() {
-    this.$store.dispatch('getLessons');
+    this.getLessons();
+
+    _.forEach(this.$route.query, function (item, key) {
+      console.log(item, key);
+    });
   },
   computed: {
     lessons: function lessons() {
       return this.$store.getters.lessonsList;
     },
+    searchBy: function searchBy() {
+      return 'Поиск по названию дисциплины';
+    },
     inputIsEmpty: function inputIsEmpty() {
       return this.form.name.length === 0;
+    },
+    searchAvailable: function searchAvailable() {
+      return this.search && this.search.length > 1;
     }
   },
-  methods: {
+  watch: {
+    $route: function $route(to, from) {
+      if (to.query.name) {}
+    }
+  },
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['getLessons']), {
     storeLesson: function storeLesson() {
       this.$store.dispatch('saveLesson', {
         name: this.form.name
       });
       this.showNotification('Добавлено');
       this.form.name = '';
+    },
+    openSearchModal: function openSearchModal(column) {
+      this.searchFormVisible = true;
+      this.search = this.$route.query[column.property];
+      this.openedHeaderCell = column;
     },
     showEditForm: function showEditForm(data) {
       this.create = !this.create;
@@ -3615,8 +3655,30 @@ __webpack_require__.r(__webpack_exports__);
         type: 'success',
         duration: 1500
       });
+    },
+    makeSearch: function makeSearch() {
+      var query = {};
+      Object.assign(query, this.$route.query);
+
+      if (!this.searchAvailable) {
+        delete query.name;
+        console.log(query);
+        this.getLessons(query);
+        this.$router.push({
+          name: 'lessons',
+          query: query
+        });
+        return;
+      }
+
+      query.name = this.search;
+      this.getLessons(query);
+      this.$router.push({
+        name: 'lessons',
+        query: query
+      });
     }
-  }
+  })
 });
 
 /***/ }),
@@ -6154,7 +6216,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.form{\n    padding: 20px;\n    border: 1px solid #EBEEF5;\n}\n.header {\n    font-size: 14px;\n    color: #363636;\n    font-weight: bold;\n    padding: 13px 10px;\n    border: 1px solid #EBEEF5;\n    border-bottom: none;\n    margin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.form{\n    padding: 20px;\n    border: 1px solid #EBEEF5;\n}\n.header {\n    font-size: 14px;\n    color: #363636;\n    font-weight: bold;\n    padding: 13px 10px;\n    border: 1px solid #EBEEF5;\n    border-bottom: none;\n    margin-bottom: 0;\n}\n.isActive {\n    color: blue;\n}\n", ""]);
 
 // exports
 
@@ -76636,7 +76698,10 @@ var render = function() {
             [
               _c(
                 "el-table",
-                { attrs: { data: _vm.lessons, border: "" } },
+                {
+                  attrs: { data: _vm.lessons, border: "" },
+                  on: { "header-click": _vm.openSearchModal }
+                },
                 [
                   _c("el-table-column", {
                     attrs: { prop: "name", label: "Название дисциплины" }
@@ -76843,6 +76908,64 @@ var render = function() {
                   )
                 ],
                 1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            title: _vm.searchBy,
+            visible: _vm.searchFormVisible,
+            width: "30%"
+          },
+          on: {
+            "update:visible": function($event) {
+              _vm.searchFormVisible = $event
+            }
+          }
+        },
+        [
+          _c("el-input", {
+            attrs: { placeholder: "Поиск" },
+            model: {
+              value: _vm.search,
+              callback: function($$v) {
+                _vm.search = $$v
+              },
+              expression: "search"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.searchFormVisible = false
+                    }
+                  }
+                },
+                [_vm._v("Закрыть")]
+              ),
+              _vm._v(" "),
+              _c(
+                "el-button",
+                { attrs: { type: "primary" }, on: { click: _vm.makeSearch } },
+                [_vm._v("Поиск")]
               )
             ],
             1
@@ -94397,8 +94520,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   actions: {
-    getLessons: function getLessons(context) {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(context.state.pref + context.state.GET.lessons, {}).then(function (response) {
+    getLessons: function getLessons(context, data) {
+      var params = {
+        params: data
+      };
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get(context.state.pref + context.state.GET.lessons, params).then(function (response) {
         context.commit('addLessons', response.data.data);
       })["catch"](function (error) {
         console.log(error);
@@ -94567,7 +94693,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   actions: {
     getUsers: function getUsers(context, data) {
-      console.log(data);
       var params = {
         params: data
       };

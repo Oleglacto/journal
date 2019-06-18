@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lesson;
+use App\Search\LessonSearch;
 use App\Transformers\LessonTransformer;
 use Illuminate\Http\Request;
 use League\Fractal\Manager;
@@ -24,11 +25,12 @@ class LessonsController extends Controller
      * Страница со всеми занятиями
      *
      * @param LessonTransformer $lessonTransformer
+     * @param LessonSearch $lessonSearch
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index(LessonTransformer $lessonTransformer)
+    public function index(LessonTransformer $lessonTransformer, LessonSearch $lessonSearch)
     {
-        $lessons = Lesson::all();
+        $lessons = Lesson::search($lessonSearch)->get();
 
         $collection = new Collection($lessons, $lessonTransformer);
 

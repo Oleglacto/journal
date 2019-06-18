@@ -32,8 +32,13 @@ export default {
         }
     },
     actions: {
-        getLessons(context){
-            axios.get(context.state.pref + context.state.GET.lessons, {})
+        getLessons(context, data){
+
+            let params = {
+                params: data
+            };
+
+            axios.get(context.state.pref + context.state.GET.lessons, params)
                 .then(response => {
                     context.commit('addLessons', response.data.data);
                 })

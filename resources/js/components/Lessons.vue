@@ -10,6 +10,7 @@
             <el-col :span="12">
                 <el-table
                         :data="lessons"
+                        @header-click="openSearchModal"
                         border>
                     <el-table-column
                             prop="name"
@@ -48,10 +49,22 @@
                 </el-form>
             </el-col>
         </el-row>
+        <el-dialog
+                :title="searchBy"
+                :visible.sync="searchFormVisible"
+                width="30%">
+            <el-input placeholder="Поиск" v-model="search"></el-input>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="searchFormVisible = false">Закрыть</el-button>
+                <el-button type="primary" @click="makeSearch">Поиск</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+    import {mapActions} from "vuex";
+
     export default {
         data() {
             return {
@@ -60,12 +73,18 @@
                 },
                 lessonId: '',
                 create: true,
-                emptyData: ''
+                emptyData: '',
+                searchFormVisible: false,
+                search: '',
+                openedHeaderCell: {}
             }
         },
 
         mounted() {
-            this.$store.dispatch('getLessons');
+            this.getLessons();
+            _.forEach(this.$route.query, function (item, key) {
+                console.log(item, key);
+            })
         },
 
         computed: {
@@ -73,16 +92,42 @@
                 return this.$store.getters.lessonsList
             },
 
+            searchBy() {
+                return 'Поиск по названию дисциплины'
+            },
+
             inputIsEmpty() {
                 return this.form.name.length === 0
+            },
+
+            searchAvailable() {
+                return this.search && this.search.length > 1;
+            },
+        },
+
+        watch: {
+            $route(to, from) {
+                if (to.query.name) {
+
+                }
             }
         },
 
         methods: {
+            ...mapActions([
+                'getLessons'
+            ]),
+
             storeLesson() {
                 this.$store.dispatch('saveLesson', { name: this.form.name });
                 this.showNotification('Добавлено');
                 this.form.name = '';
+            },
+
+            openSearchModal(column) {
+                this.searchFormVisible = true;
+                this.search = this.$route.query[column.property];
+                this.openedHeaderCell = column;
             },
 
             showEditForm(data) {
@@ -112,6 +157,25 @@
                 });
             },
 
+            makeSearch() {
+                let query = {};
+                Object.assign(query, this.$route.query);
+
+                if (!this.searchAvailable) {
+                    delete (query.name);
+                    console.log(query);
+                    this.getLessons(query);
+                    this.$router.push({ name: 'lessons', query });
+                    return;
+                }
+
+                query.name = this.search;
+
+                this.getLessons(query);
+
+                this.$router.push({ name: 'lessons', query });
+            }
+
         }
     }
 </script>
@@ -129,5 +193,8 @@
         border: 1px solid #EBEEF5;
         border-bottom: none;
         margin-bottom: 0;
+    }
+    .isActive {
+        color: blue;
     }
 </style>

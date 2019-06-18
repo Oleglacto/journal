@@ -128,7 +128,7 @@ class User extends Model
     }
 
     /**
-     * Apply all relevant thread filters.
+     * Применяем все фильтры
      *
      * @param  Builder $query
      * @param UsersFilters $filters

@@ -38,8 +38,6 @@ export default {
     actions: {
         getUsers(context, data){
 
-            console.log(data);
-
             let params = {
                 params: data
             };
