@@ -23,7 +23,8 @@ $factory->define(RecordBook::class, function (Faker $faker) {
     return [
         'user_id' => null,
         'lesson_id' => null,
-        'mark' => rand(1,5)
+        'mark' => rand(1,5),
+        'receipt_date' => $faker->date()
     ];
 });
 

@@ -9,29 +9,33 @@
 ## Запуск проекта:
 1. Склонировать проект
 ```
-   git clone https://github.com/Oleglacto/journal.git && cd journal/
+git clone https://github.com/Oleglacto/journal.git && cd journal/
 ```
 2. Подготовить базу (в качестве базы - sqlite)
 ```
-   touch journal.sqlite
+touch journal.sqlite
 ```
 3. Настроить env (настройки проекта):
 ```
-   cp .env.example .env
+cp .env.example .env
 ```
 4. Установить зависимости php и сделать миграцию данных
 ```
-   composer install && php artisan migrate && php db:seed
+composer install && php artisan migrate && php artisan db:seed
 ```
-5. Установить пакеты JS'a и собрать проект
+5. Сгенерировать ключ для приложения
 ```
-   npm i && npm run dev
+php artisan key:generate
+```  
+6. Установить пакеты JS'a и собрать проект
 ```
-6. Запустить проект
+npm i && npm run dev
 ```
-   php artisan serve
+7. Запустить проект
 ```
-7. Перейти по ссылке [localhost](http://127.0.0.1:8000)
+php artisan serve
+```
+8. Перейти по ссылке [localhost](http://127.0.0.1:8000)
 
 p.s. Все в одной команде:
 ```
@@ -40,5 +44,6 @@ cd journal/ && touch journal.sqlite &&
 cp .env.example .env &&
 composer install &&
 php artisan migrate && 
-php db:seed && npm i && npm run dev && php artisan serve
+php artisan key:generate &&
+php artisan db:seed && npm i && npm run dev && php artisan serve
 ```
